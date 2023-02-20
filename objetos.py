@@ -13,3 +13,5 @@ print("El personaje mide: "+ heroe.altura+" metros")
 heroe.correr(True)
 heroe.lanzarGranadas()
 heroe.recargarArma(87)
+
+#Fin del programa
