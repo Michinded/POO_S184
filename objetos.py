@@ -31,6 +31,7 @@ print("Y tiene una altura de: " + str(heroe.getAltura()))
 heroe.correr(True)
 heroe.lanzarGranadas()
 heroe.recargarArma(recargarH)
+#Ejemplo de metodo privado
 #heroe.__pensar()
 
 print("")
