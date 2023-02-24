@@ -1,20 +1,21 @@
 class Personaje:
-    #atributos
-    especie = "Humano"
-    nombre = "Master Chief"
-    altura = "2.70"
+    # definimios el constructor del personaje
+    def __init__(self, esp, nom, alt):
+        self.especie = esp
+        self.nombre = nom
+        self.altura = alt
 
-    #Metodos del personaje
+    # Métodos Personaje
     def correr(self, status):
-        if (status):
-            print("El personaje "+self.nombre+" esta corriendo")
+        if status:
+            print("El personaje " + self.nombre + " está corriendo")
         else:
-            print("El personaje "+ self.nombre +"se detuvo")
+            print("El personaje " + self.nombre + " se detuvo")
 
     def lanzarGranadas(self):
-        print("El personaje "+ self.nombre +" lanzo una granada")
+        print("El personaje " + self.nombre + " lanzó una granada")
 
     def recargarArma(self, municiones):
         cargador = 10
         cargador += municiones
-        print("El personaje "+ self.nombre +" recargo su arma y ahora tiene "+ str(cargador) +" municiones")
+        print("El arma tiene " + str(cargador) + " balas")
