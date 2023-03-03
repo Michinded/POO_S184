@@ -26,6 +26,12 @@ def comprobarData(username, password):
         msgbox.showerror("Error", "Usuario o contraseña incorrectos")
         success = False
 
+#funciion para validar que no haya campos vacios
+def validarCampos(username, password):
+    if username == "" or password == "":
+        return True
+    else:
+        return False
 
 class LoginWindow(tk.Toplevel):
     def __init__(self):
@@ -62,7 +68,12 @@ class LoginWindow(tk.Toplevel):
         # Consultar la tabla "users" y verificar si el usuario existe y la contraseña es correcta
         username = self.username_entry.get()
         password = self.password_entry.get()
-        comprobarData(username, password)
+        if (validarCampos(username, password)):
+            msgbox.showerror("Error", "Usuario o contraseña vacios, por favor llenar los campos")
+            return
+        else:
+            print("Usuario: ", username, "Contraseña: ", password)
+            comprobarData(username, password)
         self.destroy()
 
 

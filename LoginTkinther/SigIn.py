@@ -32,6 +32,20 @@ def Duplicado(username, email):
     else:
         return False
 
+#funcion para validar que no haya campos vacios
+def validarCampos(username, email, fullname, password):
+    if username == "" or email == "" or fullname == "" or password == "":
+        return True
+    else:
+        return False
+
+#validar que el email sea valido
+def validarEmail(email):
+    if "@" in email:
+        return False
+    else:
+        return True
+
 class SignupWindow(tk.Toplevel):
     def __init__(self):
         super().__init__()
@@ -64,7 +78,7 @@ class SignupWindow(tk.Toplevel):
         self.fullname_entry = tk.Entry(seccion1, bg=centry, fg="white", font=("Arial", 12))
         self.fullname_entry.pack()
 
-        password_lbl = tk.Label(seccion1, text="Password:", bg=cbg, fg="white", font=("Arial", 12))
+        password_lbl = tk.Label(seccion1, text="Password (Minimo 8 carácteres):", bg=cbg, fg="white", font=("Arial", 12))
         password_lbl.pack(pady=10)
 
         self.password_entry = tk.Entry(seccion1, show="*", bg=centry, fg="white", font=("Arial", 12))
@@ -79,7 +93,20 @@ class SignupWindow(tk.Toplevel):
         email = self.email_entry.get()
         fullname = self.fullname_entry.get()
         password = self.password_entry.get()
-        # Insertar el nuevo usuario en la tabla "users"
-        registrar(username, fullname, email, password)
-        # Cerrar ventana actual y volver a la ventana principal
-        self.destroy()
+        # Convertir el email a minusculas
+        email = email.lower()
+        # Validar que no haya campos vacios
+        if validarCampos(username, email, fullname, password):
+            msgbox.showerror("Error", "Todos los campos son requeridos")
+            return
+        else:
+            if len(password) < 8:
+                msgbox.showerror("Error", "La contraseña debe tener al menos 8 caracteres")
+                return
+            if validarEmail(email):
+                msgbox.showerror("Error", "Formato de Email invalido")
+                return
+            # Insertar el nuevo usuario en la tabla "users"
+            registrar(username, fullname, email, password)
+            # Cerrar ventana actual y volver a la ventana principal
+            self.destroy()
