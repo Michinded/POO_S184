@@ -1,8 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
-import fuckit
-
 from Logica import Logic
 
 
