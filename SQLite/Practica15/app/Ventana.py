@@ -160,12 +160,12 @@ class GUI():
 
         #Agregar textbox para mostrar los datos y hacer scrollable
         #Scrollbar
-        self.scrollbar = tk.Scrollbar(panel5)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.scrollbar2 = tk.Scrollbar(panel5)
+        self.scrollbar2.pack(side=tk.RIGHT, fill=tk.Y)
         #Textbox
-        self.textbox = tk.Text(panel5, yscrollcommand=self.scrollbar.set)
-        self.textbox.pack(padx=10, pady=10, fill=BOTH)
-        self.scrollbar.config(command=self.textbox.yview)
+        self.textbox2 = tk.Text(panel5, yscrollcommand=self.scrollbar2.set)
+        self.textbox2.pack(padx=10, pady=10, fill=BOTH)
+        self.scrollbar2.config(command=self.textbox2.yview)
 
         # Empaqueta el notebook
         notebook.pack(expand=True, fill="both")
@@ -241,25 +241,23 @@ class GUI():
             self.mostrar_mensaje("Error", "Ambos campos no pueden estar vacios")
             return
 
-        # Castear el email a minusculas
-        email = email.lower()
-
+        # Limpiamos el textbox para que no se acumulen los resultados
+        self.textbox.delete(1.0, tk.END)
         #Buscar el usuario
         logica = Logic()
         if logica.buscar(id, email) != None:
-            resultados_busqueda = logica.buscar(id, email)
+            resultados = logica.buscar(id, email)
+            # Damos formato a los resultados
+            contador = 0
+            for resultado in resultados:
+                mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
+                    resultado[2]) + "\n" + "\n"
+                contador += 1
+                self.textbox.insert(tk.END, f"Coincidencias #{contador}\n" + mensaje)
         else:
             self.mostrar_mensaje("Error", "No se encontro ningun usuario con esos datos")
             return
 
-        #Limpiamos el textbox para que no se acumulen los resultados
-        self.textbox.delete(1.0, tk.END)
-
-        # Damos formato a los resultados
-        for resultado in resultados_busqueda:
-            mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
-                resultado[2]) + "\n" + "\n"
-            self.textbox.insert(tk.END, mensaje)
 
         #Limpiar los campos de busqueda
         self.data_email_entry_p2
@@ -312,7 +310,7 @@ class GUI():
         elif new_name == "" and new_email != "":
             #Castear el email a minusculas
             new_email.lower()
-            
+
             #Actualizar solo el email
             self.mostrar_mensaje("Advertencia", "Se actualizara el email")
             logica = Logic()
@@ -358,14 +356,14 @@ class GUI():
             return
         resultados = logica.listar()
         #Limpiamos el textbox para que no se acumulen los resultados
-        self.textbox.delete(1.0, tk.END)
+        self.textbox2.delete(1.0, tk.END)
         # Damos formato a los resultados
         contador = 0
         for resultado in resultados:
             mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
                 resultado[2]) + "\n" + "\n"
             contador += 1
-            self.textbox.insert(tk.END, f"Usuario #{contador}\n" +mensaje)
+            self.textbox2.insert(tk.END, f"Usuario #{contador}\n" +mensaje)
 
 
 

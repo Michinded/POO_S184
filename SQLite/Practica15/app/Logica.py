@@ -30,6 +30,8 @@ class Logic():
     def buscar(self, id, email):
         conexion = Conexion()
         if id == "":
+            # Castear el email a minusculas
+            email = email.lower()
             consulta_tipo_1 = "SELECT * FROM TBRegistros WHERE email = ?"
             valores = (email,)
         elif email == "":
