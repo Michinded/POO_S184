@@ -29,7 +29,7 @@ class GUI():
         notebook.add(panel4, text="Eliminar usuario")
 
         # Agrega contenido a cada panel
-        # Panel 1
+        # Panel 1 Registrar nuevo usuario
         self.labelp1 = tk.Label(panel1, text="Registrar nuevo usuario")
         self.labelp1.pack(padx=10, pady=10)
 
@@ -54,7 +54,7 @@ class GUI():
         self.boton = tk.Button(panel1, text="Registrar", command=self.agregar)
         self.boton.pack(padx=10, pady=10)
 
-        # Panel 2
+        # Panel 2 Buscar usuario
         self.label2 = tk.Label(panel2, text="Buscar usuario por email o id")
         self.label2.pack(padx=10, pady=10)
 
@@ -82,8 +82,55 @@ class GUI():
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         #Textbox
         self.textbox = tk.Text(panel2, yscrollcommand=self.scrollbar.set)
-        self.textbox.pack(padx=10, fill=BOTH)
+        self.textbox.pack(padx=10, pady=10, fill=BOTH)
         self.scrollbar.config(command=self.textbox.yview)
+
+        # Panel 3 Actualizar usuario
+        self.label3 = tk.Label(panel3, text="Actualizar usuario")
+        self.label3.pack(padx=10, pady=10)
+
+        self.label3 = tk.Label(panel3, text="Id del usuario a actualizar")
+        self.label3.pack(padx=10, pady=10)
+
+        self.data_id_entry_p3 = tk.Entry(panel3)
+        self.data_id_entry_p3.pack(padx=10, pady=5)
+
+        self.label3 = tk.Label(panel3, text="Nuevo nombre")
+        self.label3.pack(padx=10, pady=10)
+
+        self.new_name_entry_p3 = tk.Entry(panel3)
+        self.new_name_entry_p3.pack(padx=10, pady=5)
+
+        self.label3 = tk.Label(panel3, text="Nuevo email")
+        self.label3.pack(padx=10, pady=10)
+
+        self.new_email_entry_p3 = tk.Entry(panel3)
+        self.new_email_entry_p3.pack(padx=10, pady=5)
+
+        self.label3 = tk.Label(panel3, text="Nota: Si no desea actualizar algun campo, deje el campo en blanco.")
+        self.label3.pack(padx=10, pady=10)
+
+        #Boton
+        self.boton = tk.Button(panel3, text="Actualizar", command=self.actualizar)
+        self.boton.pack(padx=10, pady=10)
+
+        # Panel 4 Eliminar usuario
+        self.label4 = tk.Label(panel4, text="Eliminar usuario")
+        self.label4.pack(padx=10, pady=10)
+
+        self.label4 = tk.Label(panel4, text="Id del usuario a eliminar")
+        self.label4.pack(padx=10, pady=10)
+
+        self.data_id_entry_p4 = tk.Entry(panel4)
+        self.data_id_entry_p4.pack(padx=10, pady=5)
+
+        #Mostar casilla de confirmacion
+        self.confirmacion = tk.IntVar()
+        self.check = tk.Checkbutton(panel4, text="Confirmar eliminación", variable=self.confirmacion)
+        self.check.pack(padx=10, pady=10)
+
+        self.boton = tk.Button(panel4, text="Eliminar", command=self.eliminar)
+        self.boton.pack(padx=10, pady=10)
 
 
 
@@ -161,6 +208,64 @@ class GUI():
         #Limpiar los campos de busqueda
         self.data_email_entry_p2
         self.data_id_entry_p2
+
+    #Funciones para actualizar un usuario
+    def actualizar(self):
+        id = self.data_id_entry_p3.get()
+        new_name = self.new_name_entry_p3.get()
+        new_email = self.new_email_entry_p3.get()
+        #Comprobar que todos los campos no esten vacios
+        if id == "" and new_name == "" and new_email == "":
+            self.mostrar_mensaje("Error", "Todos los campos son obligatorios")
+            return
+
+        #Comprobar que el id no este vacio
+        if id == "":
+            self.mostrar_mensaje("Error", "El id es obligatorio")
+            return
+        if new_name == "" and new_email == "":
+            self.mostrar_mensaje("Error", "Debe ingresar al menos un dato para actualizar")
+            return
+
+        #Comprobar que el formato del email sea correcto
+        if self.formato_email(new_email) == False and new_email != "":
+            self.mostrar_mensaje("Error", "El formato del email es incorrecto")
+            return
+        #Comprobar que el id sea un numero
+        try:
+            id = int(id)
+        except:
+            self.mostrar_mensaje("Error", "El id debe ser un numero")
+            return
+
+        if new_name != "" and new_email != "":
+            #Actualizar nombre y email
+            self.mostrar_mensaje("Advertencia", "Se actualizara el nombre y el email")
+            logica = Logic()
+            logica.actualizar(id, new_name, new_email)
+        elif new_name != "" and new_email == "":
+            #Actualizar solo el nombre
+            self.mostrar_mensaje("Advertencia", "Se actualizara el nombre")
+            logica = Logic()
+            new_email = ""
+            logica.actualizar(id, new_name, new_email)
+        elif new_name == "" and new_email != "":
+            #Actualizar solo el email
+            self.mostrar_mensaje("Advertencia", "Se actualizara el email")
+            logica = Logic()
+            new_name = ""
+            logica.actualizar(id, new_name, new_email)
+
+        #Limpiar los campos
+        self.data_id_entry_p3.delete(0, tk.END)
+        self.new_name_entry_p3.delete(0, tk.END)
+        self.new_email_entry_p3.delete(0, tk.END)
+
+    #Funcion para eliminar un usuario
+    def eliminar(self):
+        pass
+
+
 
 
 
