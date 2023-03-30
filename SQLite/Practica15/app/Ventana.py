@@ -1,13 +1,13 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, BOTH, LEFT
 from Logica import Logic
 
 
-class Ventana():
+class GUI():
     def __init__(self, ventana):
         self.ventana = ventana
         ventana.title("Ventana con paneles")
-        ventana.geometry("400x400")
+        ventana.geometry("400x500")
 
         # Crea el notebook
         notebook = ttk.Notebook(ventana)
@@ -30,7 +30,7 @@ class Ventana():
 
         # Agrega contenido a cada panel
         # Panel 1
-        self.labelp1 = tk.Label(panel1, text="Registrar usuario")
+        self.labelp1 = tk.Label(panel1, text="Registrar nuevo usuario")
         self.labelp1.pack(padx=10, pady=10)
 
         self.labelp1 = tk.Label(panel1, text="Nombre")
@@ -55,7 +55,7 @@ class Ventana():
         self.boton.pack(padx=10, pady=10)
 
         # Panel 2
-        self.label2 = tk.Label(panel2, text="Contenido del panel 2")
+        self.label2 = tk.Label(panel2, text="Buscar usuario por email o id")
         self.label2.pack(padx=10, pady=10)
 
         self.label2 = tk.Label(panel2, text="Email o id del usuario a buscar")
@@ -75,6 +75,17 @@ class Ventana():
 
         self.boton = tk.Button(panel2, text="Buscar", command=self.buscar)
         self.boton.pack(padx=10, pady=10)
+
+        #Agregar textbox para mostrar los datos y hacer scrollable
+        #Scrollbar
+        self.scrollbar = tk.Scrollbar(panel2)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        #Textbox
+        self.textbox = tk.Text(panel2, yscrollcommand=self.scrollbar.set)
+        self.textbox.pack(padx=10, fill=BOTH)
+        self.scrollbar.config(command=self.textbox.yview)
+
+
 
 
 
@@ -104,7 +115,7 @@ class Ventana():
         self.password_entry_p1.delete(0, tk.END)
 
     def mostrar_mensaje(self, titulo, mensaje):
-        messagebox.showinfo(titulo, mensaje)
+        messagebox.showwarning(titulo, mensaje)
 
     #Conjunto de funciones para comunicarse con la logica
     #Funcion para registrar un usuario
@@ -136,8 +147,18 @@ class Ventana():
             return
         #Buscar el usuario
         logica = Logic()
-        logica.buscar(id, email)
-        #Limpiar los campos
+        resultados_busqueda = logica.buscar(id, email)
+
+        #Limpiamos el textbox para que no se acumulen los resultados
+        self.textbox.delete(1.0, tk.END)
+
+        # Damos formato a los resultados
+        for resultado in resultados_busqueda:
+            mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
+                resultado[2]) + "\n" + "\n"
+            self.textbox.insert(tk.END, mensaje)
+
+        #Limpiar los campos de busqueda
         self.data_email_entry_p2
         self.data_id_entry_p2
 
@@ -149,6 +170,6 @@ class Ventana():
 #inicializa la ventana
 if __name__ == "__main__":
     ventana = tk.Tk()
-    app = Ventana(ventana)
+    app = GUI(ventana)
     ventana.mainloop()
 
