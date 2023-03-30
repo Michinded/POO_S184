@@ -49,11 +49,26 @@ class GUI():
         self.email_entry_p1 = tk.Entry(panel1)
         self.email_entry_p1.pack(padx=10, pady=5)
 
+        #La contraseña no se muestra en pantalla
         self.labelp1 = tk.Label(panel1, text="Contraseña")
         self.labelp1.pack(padx=10, pady=10)
 
-        self.password_entry_p1 = tk.Entry(panel1)
+        #Ocultamos la contraseña
+        self.password_entry_p1 = tk.Entry(panel1, show="*")
         self.password_entry_p1.pack(padx=10, pady=5)
+
+        #Confirmamos la contraseña
+        self.labelp1 = tk.Label(panel1, text="Confirmar contraseña")
+        self.labelp1.pack(padx=10, pady=10)
+
+        #Ocultamos la contraseña
+        self.password_entry_p1_2 = tk.Entry(panel1, show="*")
+        self.password_entry_p1_2.pack(padx=10, pady=5)
+
+        #Checkbutton para mostrar la contraseña
+        self.mostrar = tk.IntVar()
+        self.check = tk.Checkbutton(panel1, text="Mostrar contraseña", variable=self.mostrar, command=self.mostrar_contrasena)
+        self.check.pack(padx=10, pady=10)
 
         self.boton = tk.Button(panel1, text="Registrar", command=self.agregar)
         self.boton.pack(padx=10, pady=10)
@@ -152,12 +167,6 @@ class GUI():
         self.textbox.pack(padx=10, pady=10, fill=BOTH)
         self.scrollbar.config(command=self.textbox.yview)
 
-
-
-
-
-
-
         # Empaqueta el notebook
         notebook.pack(expand=True, fill="both")
 
@@ -177,9 +186,11 @@ class GUI():
 
 
     def limpiar_campos(self):
+        self.nombre_entry_p1.delete(0, tk.END)
         self.email_entry_p1.delete(0, tk.END)
         self.email_entry_p1.delete(0, tk.END)
         self.password_entry_p1.delete(0, tk.END)
+        self.password_entry_p1_2.delete(0, tk.END)
 
     def mostrar_mensaje(self, titulo, mensaje):
         messagebox.showwarning(titulo, mensaje)
@@ -190,6 +201,7 @@ class GUI():
         nombre = self.nombre_entry_p1.get()
         email = self.email_entry_p1.get()
         password = self.password_entry_p1.get()
+        password2 = self.password_entry_p1_2.get()
         #Comprobar que los campos no esten vacios
         if self.comproboar_ingreso_de_datos() == False:
             self.mostrar_mensaje("Error", "Todos los campos son obligatorios")
@@ -198,20 +210,40 @@ class GUI():
         if self.formato_email(email) == False:
             self.mostrar_mensaje("Error", "El formato del email es incorrecto")
             return
+        #Comprobar que las contraseñas coincidan
+        if password != password2:
+            self.mostrar_mensaje("Error", "Las contraseñas no coinciden")
+            return
+        #castear el email a minusculas
+        email = email.lower()
         #Registrar el usuario
         logica = Logic()
         logica.registar(nombre, email, password)
         #Limpiar los campos
         self.limpiar_campos()
 
+    #Funcion para mostrar la contraseña
+    def mostrar_contrasena(self):
+        if self.password_entry_p1["show"] == "*" and self.password_entry_p1_2["show"] == "*":
+            self.password_entry_p1["show"] = ""
+            self.password_entry_p1_2["show"] = ""
+        else:
+            self.password_entry_p1["show"] = "*"
+            self.password_entry_p1_2["show"] = "*"
+
     #Funcion para buscar un usuario
     def buscar(self):
         email = self.data_email_entry_p2.get()
         id = self.data_id_entry_p2.get()
+
         #Comprobar que los campos no esten vacios
         if email == "" and id == "":
             self.mostrar_mensaje("Error", "Ambos campos no pueden estar vacios")
             return
+
+        # Castear el email a minusculas
+        email = email.lower()
+
         #Buscar el usuario
         logica = Logic()
         if logica.buscar(id, email) != None:
@@ -240,7 +272,7 @@ class GUI():
         new_email = self.new_email_entry_p3.get()
         #Comprobar que todos los campos no esten vacios
         if id == "" and new_name == "" and new_email == "":
-            self.mostrar_mensaje("Error", "Todos los campos son obligatorios")
+            self.mostrar_mensaje("Error", "Debe ingresar el id y al menos un dato para actualizar")
             return
 
         #Comprobar que el id no este vacio
@@ -263,10 +295,14 @@ class GUI():
             return
 
         if new_name != "" and new_email != "":
+            # Castear el email a minusculas
+            new_email.lower()
+
             #Actualizar nombre y email
             self.mostrar_mensaje("Advertencia", "Se actualizara el nombre y el email")
             logica = Logic()
             logica.actualizar(id, new_name, new_email)
+
         elif new_name != "" and new_email == "":
             #Actualizar solo el nombre
             self.mostrar_mensaje("Advertencia", "Se actualizara el nombre")
@@ -274,6 +310,9 @@ class GUI():
             new_email = ""
             logica.actualizar(id, new_name, new_email)
         elif new_name == "" and new_email != "":
+            #Castear el email a minusculas
+            new_email.lower()
+            
             #Actualizar solo el email
             self.mostrar_mensaje("Advertencia", "Se actualizara el email")
             logica = Logic()
@@ -327,9 +366,6 @@ class GUI():
                 resultado[2]) + "\n" + "\n"
             contador += 1
             self.textbox.insert(tk.END, f"Usuario #{contador}\n" +mensaje)
-
-
-
 
 
 
