@@ -38,18 +38,20 @@ class Logic():
         else:
             consulta_tipo_1 = "SELECT * FROM TBRegistros WHERE id = ? OR email = ?"
             valores = (id, email)
-
-        cursor = conexion.cursor
-        cursor.execute(consulta_tipo_1, valores)
-        resultados = cursor.fetchall()
-        conexion.cerrar_conexion()
-
-        if len(resultados) == 0:
-            messagebox.showerror("Error", "No se encontró ningún usuario con los datos especificados")
+        try:
+            cursor = conexion.cursor
+            cursor.execute(consulta_tipo_1, valores)
+            resultados = cursor.fetchall()
+            conexion.cerrar_conexion()
+        except:
+            messagebox.showerror("Error", "No se pudo conectar a la base de datos o error en la consulta")
             return
 
+        if len(resultados) != 0:
+            return resultados
+
         #enviamos los datos a la ventana retornando una lista con los datos
-        return resultados
+
 
     def actualizar(self, id, nombre, email):
         conexion = Conexion()
@@ -89,10 +91,14 @@ class Logic():
 
     def eliminar(self, id):
         conexion = Conexion()
-        consulta = "DELETE FROM TBRegistros WHERE id = ?"
-        valores = (id,)
-        conexion.ejecutar_consulta(consulta, valores)
-        conexion.cerrar_conexion()
+        try:
+            consulta = "DELETE FROM TBRegistros WHERE id = ?"
+            valores = (id,)
+            conexion.ejecutar_consulta(consulta, valores)
+            conexion.cerrar_conexion()
+            messagebox.showinfo("Eliminación", "Eliminación exitosa")
+        except:
+            messagebox.showerror("Error", "No se pudo eliminar el registro o no existe")
 
     #def enviar_dato_a_ventana(self, valores=()):
 

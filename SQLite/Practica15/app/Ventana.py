@@ -194,7 +194,11 @@ class GUI():
             return
         #Buscar el usuario
         logica = Logic()
-        resultados_busqueda = logica.buscar(id, email)
+        if logica.buscar(id, email) != None:
+            resultados_busqueda = logica.buscar(id, email)
+        else:
+            self.mostrar_mensaje("Error", "No se encontro ningun usuario con esos datos")
+            return
 
         #Limpiamos el textbox para que no se acumulen los resultados
         self.textbox.delete(1.0, tk.END)
@@ -263,7 +267,29 @@ class GUI():
 
     #Funcion para eliminar un usuario
     def eliminar(self):
-        pass
+        id = self.data_id_entry_p4.get()
+        #Comprobar que el id no este vacio
+        if id == "":
+            self.mostrar_mensaje("Error", "El id es obligatorio")
+            return
+        #Comprobar que el id sea un numero
+        try:
+            id = int(id)
+        except:
+            self.mostrar_mensaje("Error", "El id debe ser un numero")
+            return
+        #Comprobar que se haya confirmado la eliminacion
+        if self.confirmacion.get() == 0:
+            self.mostrar_mensaje("Error", "Debe confirmar la eliminacion")
+            return
+
+        #Eliminar el usuario
+        logica = Logic()
+        logica.eliminar(id)
+
+        #Limpiar los campos
+        self.data_id_entry_p4.delete(0, tk.END)
+        self.confirmacion.set(0)
 
 
 
