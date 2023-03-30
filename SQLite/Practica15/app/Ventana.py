@@ -7,7 +7,7 @@ class GUI():
     def __init__(self, ventana):
         self.ventana = ventana
         ventana.title("Ventana con paneles")
-        ventana.geometry("400x500")
+        ventana.geometry("550x450")
 
         # Crea el notebook
         notebook = ttk.Notebook(ventana)
@@ -27,6 +27,10 @@ class GUI():
         # Crea el cuarto panel
         panel4 = ttk.Frame(notebook)
         notebook.add(panel4, text="Eliminar usuario")
+
+        # Crea el quinto panel
+        panel5 = ttk.Frame(notebook)
+        notebook.add(panel5, text="Listar todos los usuarios")
 
         # Agrega contenido a cada panel
         # Panel 1 Registrar nuevo usuario
@@ -131,6 +135,22 @@ class GUI():
 
         self.boton = tk.Button(panel4, text="Eliminar", command=self.eliminar)
         self.boton.pack(padx=10, pady=10)
+
+        # Panel 5 Listar usuarios
+        self.label5 = tk.Label(panel5, text="Listar usuarios")
+        self.label5.pack(padx=10, pady=10)
+
+        self.boton = tk.Button(panel5, text="Listar", command=self.listar)
+        self.boton.pack(padx=10, pady=10)
+
+        #Agregar textbox para mostrar los datos y hacer scrollable
+        #Scrollbar
+        self.scrollbar = tk.Scrollbar(panel5)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        #Textbox
+        self.textbox = tk.Text(panel5, yscrollcommand=self.scrollbar.set)
+        self.textbox.pack(padx=10, pady=10, fill=BOTH)
+        self.scrollbar.config(command=self.textbox.yview)
 
 
 
@@ -290,6 +310,23 @@ class GUI():
         #Limpiar los campos
         self.data_id_entry_p4.delete(0, tk.END)
         self.confirmacion.set(0)
+
+    #Funcion para mostrar todos los usuarios
+    def listar(self):
+        logica = Logic()
+        if logica.listar() == None:
+            self.mostrar_mensaje("Error", "No hay usuarios registrados")
+            return
+        resultados = logica.listar()
+        #Limpiamos el textbox para que no se acumulen los resultados
+        self.textbox.delete(1.0, tk.END)
+        # Damos formato a los resultados
+        contador = 0
+        for resultado in resultados:
+            mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
+                resultado[2]) + "\n" + "\n"
+            contador += 1
+            self.textbox.insert(tk.END, f"Usuario #{contador}\n" +mensaje)
 
 
 

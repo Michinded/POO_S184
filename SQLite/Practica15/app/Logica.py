@@ -102,3 +102,19 @@ class Logic():
 
     #def enviar_dato_a_ventana(self, valores=()):
 
+    #Listar todos los usuarios
+    def listar(self):
+        conexion = Conexion()
+        consulta = "SELECT * FROM TBRegistros"
+        try:
+            cursor = conexion.cursor
+            cursor.execute(consulta)
+            resultados = cursor.fetchall()
+            conexion.cerrar_conexion()
+        except:
+            messagebox.showerror("Error", "No se pudo conectar a la base de datos o error en la consulta")
+            return
+        if len(resultados) != 0:
+            return resultados
+
+
