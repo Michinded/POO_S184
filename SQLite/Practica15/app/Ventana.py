@@ -158,14 +158,18 @@ class GUI():
         self.boton = tk.Button(panel5, text="Listar", command=self.listar)
         self.boton.pack(padx=10, pady=10)
 
-        #Agregar textbox para mostrar los datos y hacer scrollable
-        #Scrollbar
+        # Crear Treeview
+        self.treeview = ttk.Treeview(panel5, columns=('id', 'nombre', 'email'), show='headings')
+        self.treeview.heading('id', text='ID')
+        self.treeview.heading('nombre', text='Nombre')
+        self.treeview.heading('email', text='Email')
+        self.treeview.pack(padx=10, pady=10, fill=BOTH, expand=True)
+
+        # Scrollbar
         self.scrollbar2 = tk.Scrollbar(panel5)
         self.scrollbar2.pack(side=tk.RIGHT, fill=tk.Y)
-        #Textbox
-        self.textbox2 = tk.Text(panel5, yscrollcommand=self.scrollbar2.set)
-        self.textbox2.pack(padx=10, pady=10, fill=BOTH)
-        self.scrollbar2.config(command=self.textbox2.yview)
+        self.treeview.config(yscrollcommand=self.scrollbar2.set)
+        self.scrollbar2.config(command=self.treeview.yview)
 
         # Empaqueta el notebook
         notebook.pack(expand=True, fill="both")
@@ -355,15 +359,13 @@ class GUI():
             self.mostrar_mensaje("Error", "No hay usuarios registrados")
             return
         resultados = logica.listar()
-        #Limpiamos el textbox para que no se acumulen los resultados
-        self.textbox2.delete(1.0, tk.END)
-        # Damos formato a los resultados
-        contador = 0
+
+        # Borrar todos los datos del Treeview
+        self.treeview.delete(*self.treeview.get_children())
+
+        # Agregar resultados al Treeview
         for resultado in resultados:
-            mensaje = "ID: " + str(resultado[0]) + "\n" + "NOMBRE: " + str(resultado[1]) + "\n" + "EMAIL: " + str(
-                resultado[2]) + "\n" + "\n"
-            contador += 1
-            self.textbox2.insert(tk.END, f"Usuario #{contador}\n" +mensaje)
+            self.treeview.insert('', 'end', values=(resultado[0], resultado[1], resultado[2]))
 
 
 
