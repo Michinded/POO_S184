@@ -126,6 +126,12 @@ class GUI():
         self.new_email_entry_p3 = tk.Entry(panel3)
         self.new_email_entry_p3.pack(padx=10, pady=5)
 
+        self.label3 = tk.Label(panel3, text="Nueva contraseña")
+        self.label3.pack(padx=10, pady=10)
+
+        self.new_password_entry_p3 = tk.Entry(panel3)
+        self.new_password_entry_p3.pack(padx=10, pady=5)
+
         self.label3 = tk.Label(panel3, text="Nota: Si no desea actualizar algun campo, deje el campo en blanco.")
         self.label3.pack(padx=10, pady=10)
 
@@ -272,8 +278,9 @@ class GUI():
         id = self.data_id_entry_p3.get()
         new_name = self.new_name_entry_p3.get()
         new_email = self.new_email_entry_p3.get()
+        new_password = self.new_password_entry_p3.get()
         #Comprobar que todos los campos no esten vacios
-        if id == "" and new_name == "" and new_email == "":
+        if id == "" and new_name == "" and new_email == "" and new_password == "":
             self.mostrar_mensaje("Error", "Debe ingresar el id y al menos un dato para actualizar")
             return
 
@@ -281,7 +288,7 @@ class GUI():
         if id == "":
             self.mostrar_mensaje("Error", "El id es obligatorio")
             return
-        if new_name == "" and new_email == "":
+        if new_name == "" and new_email == "" and new_password == "":
             self.mostrar_mensaje("Error", "Debe ingresar al menos un dato para actualizar")
             return
 
@@ -296,35 +303,54 @@ class GUI():
             self.mostrar_mensaje("Error", "El id debe ser un numero")
             return
 
-        if new_name != "" and new_email != "":
+        if new_name != "" and new_email != "" and new_password != "":
             # Castear el email a minusculas
-            new_email.lower()
-
-            #Actualizar nombre y email
-            self.mostrar_mensaje("Advertencia", "Se actualizara el nombre y el email")
+            new_email = new_email.lower()
+            #Actualizar nombre email y contraseña
+            self.mostrar_mensaje("Advertencia", "Se actualizara el nombre, email y contraseña")
             logica = Logic()
-            logica.actualizar(id, new_name, new_email)
+            logica.actualizar(id, new_name, new_email, new_password)
 
-        elif new_name != "" and new_email == "":
+        elif new_name != "" and new_email == "" and new_password == "":
             #Actualizar solo el nombre
             self.mostrar_mensaje("Advertencia", "Se actualizara el nombre")
             logica = Logic()
             new_email = ""
-            logica.actualizar(id, new_name, new_email)
-        elif new_name == "" and new_email != "":
+            new_password = ""
+            logica.actualizar(id, new_name, new_email, new_password)
+        elif new_name == "" and new_email != "" and new_password == "":
             #Castear el email a minusculas
             new_email.lower()
-
+            new_name = ""
+            new_password = ""
             #Actualizar solo el email
             self.mostrar_mensaje("Advertencia", "Se actualizara el email")
-            logica = Logic()
+            logic = Logic()
+            logic.actualizar(id, new_name, new_email, new_password)
+
+        elif new_name == "" and new_email == "" and new_password != "":
+            #Actualizar solo la contraseña
+            self.mostrar_mensaje("Advertencia", "Se actualizara la contraseña")
             new_name = ""
-            logica.actualizar(id, new_name, new_email)
+            new_email = ""
+            logica = Logic()
+            logica.actualizar(id, new_name, new_email, new_password)
+        else:
+            #Actualizar nombre y email
+            self.mostrar_mensaje("Advertencia", "Se actualizara el nombre y el email")
+            new_password = ""
+            new_email = new_email.lower()
+            logica = Logic()
+            logica.actualizar(id, new_name, new_email, new_password)
+
+
+
 
         #Limpiar los campos
         self.data_id_entry_p3.delete(0, tk.END)
         self.new_name_entry_p3.delete(0, tk.END)
         self.new_email_entry_p3.delete(0, tk.END)
+        self.new_password_entry_p3.delete(0, tk.END)
 
     #Funcion para eliminar un usuario
     def eliminar(self):

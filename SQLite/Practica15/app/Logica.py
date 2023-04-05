@@ -55,7 +55,7 @@ class Logic():
         #enviamos los datos a la ventana retornando una lista con los datos
 
 
-    def actualizar(self, id, nombre, email):
+    def actualizar(self, id, nombre, email, password):
         conexion = Conexion()
         # Validar que el correo no este registrado en otro usuario
         consulta_tipo_1 = "SELECT * FROM TBRegistros WHERE email = ? AND id != ?"
@@ -69,18 +69,31 @@ class Logic():
         else:
             # Validar que se ejecute la consulta
             #Validar si solo se actualizo el nombre o el correo
-            if nombre == "" and email != "":
+            if nombre == "" and password == "" and email != "":
                 #Si solo se actualizo el correo
                 consulta_tipo_2 = "UPDATE TBRegistros SET email = ? WHERE id = ?"
                 valores2 = (email, id)
-            elif nombre != "" and email == "":
+            elif nombre != "" and email == "" and password == "":
                 #Si solo se actualizo el nombre
                 consulta_tipo_2 = "UPDATE TBRegistros SET nombre = ? WHERE id = ?"
                 valores2 = (nombre, id)
-            else:
-                #Si se tienen los dos datos se actualizan los dos
+            elif nombre == "" and email == "" and password != "":
+                #Si solo se actualizo la contraseña
+                #encriptamos la contraseña
+                password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+                consulta_tipo_2 = "UPDATE TBRegistros SET password = ? WHERE id = ?"
+                valores2 = (password, id)
+            elif nombre != "" and email != "" and password == "":
+                # Si se tienen que actualizar el nombre y el correo
+                email = email.lower()
                 consulta_tipo_2 = "UPDATE TBRegistros SET nombre = ?, email = ? WHERE id = ?"
                 valores2 = (nombre, email, id)
+            else:
+                # Si se tienen que actualizar el nombre, el correo y la contraseña
+                email = email.lower()
+                password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+                consulta_tipo_2 = "UPDATE TBRegistros SET nombre = ?, email = ?, password = ? WHERE id = ?"
+                valores2 = (nombre, email, password, id)
             try:
                 conexion.ejecutar_consulta(consulta_tipo_2, valores2)
                 if cursor.rowcount == 0:
@@ -89,6 +102,7 @@ class Logic():
                     messagebox.showinfo("Actualización", "Actualización exitosa")
             except:
                 messagebox.showerror("Error", "No se pudo actualizar el registro")
+
         conexion.cerrar_conexion()
 
     def eliminar(self, id):
