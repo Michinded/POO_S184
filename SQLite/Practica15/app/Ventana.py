@@ -7,7 +7,7 @@ class GUI():
     def __init__(self, ventana):
         self.ventana = ventana
         ventana.title("Ventana con paneles")
-        ventana.geometry("550x450")
+        ventana.geometry("640x450")
 
         # Crea el notebook
         notebook = ttk.Notebook(ventana)
