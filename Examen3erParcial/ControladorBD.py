@@ -46,16 +46,15 @@ class Conexion():
                 return
             self.cursor.execute("UPDATE TBCuentas SET Saldo = ? WHERE NoCuenta = ?", (saldo, no_cuenta))
             self.conexion.commit()
+            # Mostrar un mensaje de que se actualizo correctamente
+            messagebox.showinfo("Informacion", "Cuenta actualizada correctamente")
         except:
             messagebox.showerror("Error", "No se pudo actualizar la cuenta")
             return
 
-    def consultar(self, no_cuenta):
-        if (no_cuenta == ""):
-            messagebox.showerror("Error", "Debe ingresar un numero de cuenta")
-            return
+    def consultar(self):
         try:
-            self.cursor.execute("SELECT * FROM TBCuentas WHERE no_cuenta = ?", (no_cuenta,))
+            self.cursor.execute("SELECT * FROM TBCuentas")
             return self.cursor.fetchall()
         except:
             messagebox.showerror("Error", "No se pudo consultar la cuenta")

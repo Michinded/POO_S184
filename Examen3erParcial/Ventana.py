@@ -36,13 +36,26 @@ def actualizar_cuenta():
         messagebox.showerror("Error", "No se pudo actualizar la cuenta")
 
 
+# Funcion para consultar todas las cuentas y mostrarlas en el treeview
+def consultar_cuentas():
+    # Llamar al metodo consultar de la clase conexion
+    try:
+        cuentas = conexion.consultar()
+        # Limpiar el treeview
+        treeview.delete(*treeview.get_children())
+        # Insertar los datos en el treeview
+        for cuenta in cuentas:
+            treeview.insert("", tk.END, text=cuenta[0], values=(cuenta[1], cuenta[2]))
+    except:
+        messagebox.showerror("Error", "No se pudo consultar las cuentas")
+
 
 # Crear un objeto de la clase conexion
 conexion = Conexion()
 
 Ventana = tk.Tk()
 Ventana.title("Banco")
-Ventana.geometry("400x400")
+Ventana.geometry("600x400")
 
 # Crear un objeto de la clase Notebook
 notebook = ttk.Notebook(Ventana)
@@ -88,6 +101,22 @@ saldo_actualizar = tk.StringVar()
 entry4 = ttk.Entry(panel2, textvariable=saldo_actualizar).pack(pady=5)
 
 btn_actualizar = ttk.Button(panel2, text="Actualizar", command=actualizar_cuenta).pack(pady=5)
+
+
+# Crear los widgets para el panel 3
+labelt3 = ttk.Label(panel3, text="Consultar todos").pack(pady=5)
+
+btn_consultar = ttk.Button(panel3, text="Consultar", command=consultar_cuentas).pack(pady=5)
+
+# Crear el treeview
+treeview = ttk.Treeview(panel3, columns=("Id", "Numero de cuenta", "Saldo"))
+treeview.heading("#0", text="Id")
+treeview.heading("#1", text="Numero de cuenta")
+treeview.heading("#2", text="Saldo")
+treeview.pack(pady=5)
+
+
+
 
 
 
